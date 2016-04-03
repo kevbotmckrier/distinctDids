@@ -16,39 +16,18 @@ safelyDistinct<-function(arrayDids){
 
 ptm <- proc.time()
 
-findDistinctDids<-function(arrayDids,numToFind){
-	
-	boolDist<-safelyDistinct(arrayDids)
-	colnames(boolDist)<-as.character(arrayDids)
-	
-	safeNumbers <- colSums(boolDist)
-	selectedDid<-names(safeNumbers[match(max(safeNumbers),safeNumbers)])
-	if(numToFind>1) {
-		return(c(selectedDid,findDistinctDids(arrayDids[boolDist[,selectedDid]],numToFind-1)))
-		
-	} else {
-		return(names(safeNumbers[match(max(safeNumbers),safeNumbers)]))
-	}		
-	
-}
+boolDist<-safelyDistinct(arrayDids)
+colnames(boolDist)<-as.character(arrayDids)
 
-findDistinctDids(arrayDids,100) 
-"Recursive:"
-proc.time()-ptm
+selectedDids <- array(dim=300)
+for(i in 1:300) {
 
-ptm <- proc.time()
-
-selectedDids <- array(dim=100)
-for(i in 1:100) {
-	
-	boolDist<-safelyDistinct(arrayDids)
-	colnames(boolDist)<-as.character(arrayDids)
-	
 	safeNumbers <- colSums(boolDist)
 	
 	selectedDids[i] <- names(safeNumbers[match(max(safeNumbers),safeNumbers)])
 	
 	arrayDids<-arrayDids[boolDist[,selectedDids[i]]]
+	boolDist<-boolDist[boolDist[,selectedDids[i]],boolDist[,selectedDids[i]]]
 	
 }
 selectedDids
